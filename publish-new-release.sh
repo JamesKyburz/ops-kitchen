@@ -26,7 +26,7 @@ git tag "${new_tag:?}"
 
 log_success "created git tag ${new_tag:?}"
 
-git push origin master
-git push origin master --tags
+git push origin main
+git push origin main --tags
 
 log_success "pushed new tag"

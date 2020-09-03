@@ -1,6 +1,3 @@
-FROM amazon/aws-cli as aws-cli
-FROM koalaman/shellcheck:stable as shellcheck
-
 FROM amazonlinux:2
 
 LABEL maintainer="James Kyburz james.kyburz@gmail.com"
@@ -14,22 +11,21 @@ ENV PATH "$DENO_INSTALL/bin:$PATH"
 
 RUN \
   log_info() { echo -e "\033[0m\033[1;94m${*}\033[0m"; } && \
-  log_info "installing shellcheck"
-COPY --from=shellcheck /bin/shellcheck /bin/shellcheck
-
-RUN \
-  log_info() { echo -e "\033[0m\033[1;94m${*}\033[0m"; } && \
-  log_info "installing aws-cli"
-COPY --from=aws-cli /usr/local/bin/aws /usr/local/bin/aws
-
-RUN \
-  log_info() { echo -e "\033[0m\033[1;94m${*}\033[0m"; } && \
   log_info "installing base stuff" && \
   mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH" && \
   mkdir -p /root/.config && \
   chown -R $USER:$(id -gn $USER) /root/.config && \
   yum -y groupinstall "Development Tools" && \
   yum install -y pcre-devel xz-devel openssl wget jq procps which python3 && \
+  log_info "installing aws-cli" && \
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+  unzip awscliv2.zip && \
+  ./aws/install && \
+  rm -rf ./aws && \
+  log_info "installing shellcheck" && \
+  scversion="stable" && \
+  wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" | tar -xJv && \
+  cp "shellcheck-${scversion}/shellcheck" /usr/bin/ && \
   log_info "installing node" && \
   curl -sL https://rpm.nodesource.com/setup_12.x | bash - && \
   curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && \
@@ -71,7 +67,7 @@ RUN \
   log_info "installing latest npm" && \
   npm install npm@latest -g && \
   log_info "installing global npm modules" && \
-  npm install dynamodb-query-cli node-gyp yamljs babel-cli picture-tube modclean serverless -g && \
+  npm install dynamodb-query-cli yamljs picture-tube modclean serverless -g && \
   log_info "installing 1password cli" && \
   curl https://cache.agilebits.com/dist/1P/op/pkg/v1.6.0/op_linux_amd64_v1.6.0.zip -o op.zip && \
   unzip op.zip && \

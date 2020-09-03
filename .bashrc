@@ -1,5 +1,3 @@
-set -ueo pipefail
-
 function clear-prompt() {
   local ps1='\033[92mᐅ \033[0m'
   export PS1="${ps1:?}"

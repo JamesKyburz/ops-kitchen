@@ -9,6 +9,8 @@ ENV GOPATH /root/.go
 ENV GOROOT /usr/local/go
 ENV PATH "/usr/local/go/bin:${PATH}"
 ENV PATH "/root/.go/bin:${PATH}"
+ENV DENO_INSTALL "/root/.deno"
+ENV PATH "$DENO_INSTALL/bin:$PATH"
 
 RUN \
   log_info() { echo -e "\033[0m\033[1;94m${*}\033[0m"; } && \
@@ -32,6 +34,8 @@ RUN \
   curl -sL https://rpm.nodesource.com/setup_12.x | bash - && \
   curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && \
   yum install -y nodejs yarn && \
+  log_info "installing deno" && \
+  curl -fsSL https://deno.land/x/install/install.sh | sh && \
   log_info "installing go" && \
   curl https://storage.googleapis.com/golang/go1.15.1.linux-amd64.tar.gz -o go.tar.gz && \
   tar -xzf go.tar.gz && \

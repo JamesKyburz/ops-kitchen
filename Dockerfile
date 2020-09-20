@@ -56,12 +56,8 @@ RUN \
   tar -xzf go.tar.gz && \
   mv go /usr/local && \
   rm -rf go.tar.gz && \
-  log_info "installing node-prune" && \
-  go get github.com/tj/node-prune && \
   log_info "installing shfmt" && \
-  GO111MODULE=on go get mvdan.cc/sh/v3/cmd/shfmt && \
-  log_info "installing node-prune" && \
-  go get github.com/tj/node-prune
+  GO111MODULE=on go get mvdan.cc/sh/v3/cmd/shfmt
 
 FROM base as docker
 
@@ -116,8 +112,6 @@ RUN \
   yum install -y nodejs yarn && \
   log_info "installing latest npm" && \
   npm install npm@latest -g && \
-  log_info "installing global npm modules" && \
-  npm install dynamodb-query-cli yamljs picture-tube modclean serverless -g && \
   log_info "installing deno" && \
   curl -fsSL https://deno.land/x/install/install.sh | sh && \
   log_info "installing envsubst" && \

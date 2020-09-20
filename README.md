@@ -10,15 +10,10 @@ main includes
 * deno
 * shfmt
 * shellcheck
-* node-prune
-* serverless
-* picture-tube
-* modclean
 * aws cli (version 2)
 * ecs cli
 * aws-sam-cli
 * awscurl
-* dynamodb-query-cli
 * 1password cli
 * terraform
 * jq
@@ -29,7 +24,7 @@ main includes
 * openssl
 * ssh
 * ag
-* bash commons
+* bash-commons
 
 # license
 

@@ -1,14 +1,15 @@
 # ops-kitchen
 
-A docker ops image with the kitchen sink included.
+A docker ops image with most of the kitchen sink included.
 
 Focus on tools needed for [AWS](https://aws.amazon.com), [Node.js](https://nodejs.org) & [Lambda](https://aws.amazon.com/lambda).
 
 main includes
 
-* go
 * node
+* deno
 * shfmt
+* shellcheck
 * node-prune
 * serverless
 * picture-tube
@@ -20,13 +21,15 @@ main includes
 * dynamodb-query-cli
 * 1password cli
 * terraform
-* openssl
 * jq
-* git, make and friends
+* yq
 * python3
 * docker
 * bash
-* ag (the_silver_searcher)
+* openssl
+* ssh
+* ag
+* bash commons
 
 # license
 

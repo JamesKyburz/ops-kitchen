@@ -105,7 +105,7 @@ RUN \
   mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH" && \
   mkdir -p /root/.config && \
   chown -R $USER:$(id -gn $USER) /root/.config && \
-  yum install -y python3 jq unzip openssl openssh-clients && \
+  yum install -y python3 jq unzip openssl openssh-clients less && \
   log_info "installing node" && \
   curl -sL https://rpm.nodesource.com/setup_12.x | bash - && \
   curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && \

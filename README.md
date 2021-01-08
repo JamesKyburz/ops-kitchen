@@ -2,6 +2,8 @@
 
 A docker ops image with most of the kitchen sink included.
 
+![publish](https://github.com/JamesKyburz/ops-kitchen/workflows/publish/badge.svg)
+
 Focus on tools needed for [AWS](https://aws.amazon.com), [Node.js](https://nodejs.org) & [Lambda](https://aws.amazon.com/lambda).
 
 main includes

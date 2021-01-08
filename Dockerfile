@@ -120,6 +120,10 @@ RUN \
   mv envsubst /usr/local/bin && \
   log_info "installing aws-sam-cli" && \
   pip3 install --no-cache-dir aws-sam-cli && \
+  log_info "installing black" && \
+  pip3 install --no-cache-dir black && \
+  log_info "installing virtualenv" && \
+  pip3 install --no-cache-dir virtualenv && \
   log_info "installing awscurl" && \
   pip3 install --no-cache-dir awscurl && \
   log_info "installing yq" && \

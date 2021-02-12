@@ -27,6 +27,8 @@ main includes
 * ssh
 * ag
 * bash-commons
+* bat
+* iamlive
 
 # license
 

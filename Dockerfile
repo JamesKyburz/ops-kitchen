@@ -53,12 +53,25 @@ ENV PATH "/root/.go/bin:${PATH}"
 RUN \
   log_info() { echo -e "\033[0m\033[1;94m${*}\033[0m"; } && \
   log_info "installing go" && \
-  curl https://storage.googleapis.com/golang/go1.15.1.linux-amd64.tar.gz -o go.tar.gz && \
+  curl -L https://golang.org/dl/go1.16rc1.linux-amd64.tar.gz -o go.tar.gz && \
   tar -xzf go.tar.gz && \
   mv go /usr/local && \
   rm -rf go.tar.gz && \
   log_info "installing shfmt" && \
-  GO111MODULE=on go get mvdan.cc/sh/v3/cmd/shfmt
+  GO111MODULE=on go get mvdan.cc/sh/v3/cmd/shfmt && \
+  log_info "installing iamlive" && \
+  GO111MODULE=on go get github.com/iann0036/iamlive
+
+FROM base as rust
+
+RUN \
+  log_info() { echo -e "\033[0m\033[1;94m${*}\033[0m"; } && \
+  log_info "installing rust" && \
+  curl https://sh.rustup.rs -sSf -o install && \
+  bash install -y && \
+  source /root/.cargo/env && \
+  log_info "installing bat" && \
+  cargo install --locked bat
 
 FROM base as docker
 
@@ -84,6 +97,7 @@ ENV GOPATH /root/.go
 ENV GOROOT /usr/local/go
 ENV PATH "/usr/local/go/bin:${PATH}"
 ENV PATH "/root/.go/bin:${PATH}"
+ENV PATH "/root/.cargo/bin:${PATH}"
 ENV DENO_INSTALL "/root/.deno"
 ENV PATH "$DENO_INSTALL/bin:$PATH"
 
@@ -98,6 +112,7 @@ COPY --from=awscli /usr/local/aws-cli /usr/local/aws-cli
 COPY --from=docker /usr/bin/docker /usr/bin/docker
 COPY --from=docker /usr/local/bin/docker-compose /usr/local/bin/docker-compose
 COPY --from=go /root/.go/bin /root/.go/bin
+COPY --from=rust /root/.cargo/bin /root/.cargo/bin
 COPY --from=bash-commons /opt/gruntwork/bash-commons /opt/gruntwork/bash-commons
 
 RUN \
@@ -109,7 +124,7 @@ RUN \
   yum install -y python3 jq unzip openssl openssh-clients less && \
   python3 -m pip install -U pip && \
   log_info "installing node" && \
-  curl -sL https://rpm.nodesource.com/setup_12.x | bash - && \
+  curl -sL https://rpm.nodesource.com/setup_14.x | bash - && \
   curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && \
   yum install -y nodejs yarn && \
   log_info "installing latest npm" && \

@@ -4,7 +4,8 @@ RUN \
   log_info() { echo -e "\033[0m\033[1;94m${*}\033[0m"; } && \
   log_info "installing base stuff" && \
   yum -y groupinstall "Development Tools" && \
-  yum install -y pcre-devel xz-devel openssl wget jq python3
+  yum install -y pcre-devel xz-devel openssl wget jq python3 && \
+  python3 -m pip install -U pip
 
 FROM base as shellcheck
 
@@ -106,6 +107,7 @@ RUN \
   mkdir -p /root/.config && \
   chown -R $USER:$(id -gn $USER) /root/.config && \
   yum install -y python3 jq unzip openssl openssh-clients less && \
+  python3 -m pip install -U pip && \
   log_info "installing node" && \
   curl -sL https://rpm.nodesource.com/setup_12.x | bash - && \
   curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && \

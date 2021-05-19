@@ -21,8 +21,16 @@ FROM base as ag
 RUN \
   log_info() { echo -e "\033[0m\033[1;94m${*}\033[0m"; } && \
   log_info "install the silver searcher (ag)" && \
-  git clone https://github.com/ggreer/the_silver_searcher.git && \
+  git clone --depth 1 https://github.com/ggreer/the_silver_searcher.git && \
   (cd the_silver_searcher && ./build.sh && make install)
+
+FROM base as fzf
+
+RUN \
+  log_info() { echo -e "\033[0m\033[1;94m${*}\033[0m"; } && \
+  log_info "install fzf" && \
+  git clone --depth 1 https://github.com/junegunn/fzf.git && \
+  (cd fzf; yes | ./install)
 
 FROM base as awscli
 
@@ -53,7 +61,7 @@ ENV PATH "/root/.go/bin:${PATH}"
 RUN \
   log_info() { echo -e "\033[0m\033[1;94m${*}\033[0m"; } && \
   log_info "installing go" && \
-  curl -L https://golang.org/dl/go1.16rc1.linux-amd64.tar.gz -o go.tar.gz && \
+  curl -L https://golang.org/dl/go1.16.4.linux-amd64.tar.gz -o go.tar.gz && \
   tar -xzf go.tar.gz && \
   mv go /usr/local && \
   rm -rf go.tar.gz && \
@@ -80,7 +88,7 @@ RUN \
   log_info "installing docker" && \
   amazon-linux-extras install docker && \
   log_info "installing docker-compose" && \
-  curl -L https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m) \
+  curl -L https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m) \
     -o /usr/local/bin/docker-compose && \
   chmod +x /usr/local/bin/docker-compose
 
@@ -114,6 +122,9 @@ COPY --from=docker /usr/local/bin/docker-compose /usr/local/bin/docker-compose
 COPY --from=go /root/.go/bin /root/.go/bin
 COPY --from=rust /root/.cargo/bin /root/.cargo/bin
 COPY --from=bash-commons /opt/gruntwork/bash-commons /opt/gruntwork/bash-commons
+COPY --from=fzf /fzf/bin /fzf/bin
+COPY --from=fzf /fzf/shell /fzf/shell
+COPY --from=fzf /root/.fzf.bash /root/.fzf.bash
 
 RUN \
   log_info() { echo -e "\033[0m\033[1;94m${*}\033[0m"; } && \
@@ -124,7 +135,7 @@ RUN \
   yum install -y python3 jq unzip openssl openssh-clients less && \
   python3 -m pip install -U pip && \
   log_info "installing node" && \
-  curl -sL https://rpm.nodesource.com/setup_14.x | bash - && \
+  curl -sL https://rpm.nodesource.com/setup_lts.x | bash - && \
   curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && \
   yum install -y nodejs yarn && \
   log_info "installing latest npm" && \
@@ -132,7 +143,7 @@ RUN \
   log_info "installing deno" && \
   curl -fsSL https://deno.land/x/install/install.sh | sh && \
   log_info "installing envsubst" && \
-  curl -L https://github.com/a8m/envsubst/releases/download/v1.1.0/envsubst-"$(uname -s)"-"$(uname -m)" -o envsubst && \
+  curl -L https://github.com/a8m/envsubst/releases/download/v1.2.0/envsubst-"$(uname -s)"-"$(uname -m)" -o envsubst && \
   chmod +x envsubst && \
   mv envsubst /usr/local/bin && \
   log_info "installing aws-sam-cli" && \
@@ -146,7 +157,7 @@ RUN \
   log_info "installing yq" && \
   pip3 install --no-cache-dir yq && \
   log_info "installing 1password cli" && \
-  curl https://cache.agilebits.com/dist/1P/op/pkg/v1.6.0/op_linux_amd64_v1.6.0.zip -o op.zip && \
+  curl https://cache.agilebits.com/dist/1P/op/pkg/v1.9.2/op_linux_amd64_v1.9.2.zip -o op.zip && \
   unzip op.zip && \
   chmod +x op && \
   mv op /usr/bin && \
@@ -166,3 +177,5 @@ RUN \
   log_info "✨ ops-kitchen installation complete. ✨"
 
 COPY .bashrc /root/.bashrc
+
+RUN echo 'source /root/.fzf.bash' >> /root/.bashrc

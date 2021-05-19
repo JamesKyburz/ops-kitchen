@@ -1,9 +1,15 @@
 name: publish
+
+concurrency:
+  group: ${{ github.head_ref }}-publish
+  cancel-in-progress: true
+
 on:
   push:
   schedule:
     - cron:  '0 0 1 * *'
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest

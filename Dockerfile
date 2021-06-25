@@ -132,7 +132,7 @@ RUN \
   mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH" && \
   mkdir -p /root/.config && \
   chown -R $USER:$(id -gn $USER) /root/.config && \
-  yum install -y python3 jq unzip openssl openssh-clients less && \
+  yum install -y git python3 jq unzip openssl openssh-clients less && \
   python3 -m pip install -U pip && \
   log_info "installing node" && \
   curl -sL https://rpm.nodesource.com/setup_lts.x | bash - && \
